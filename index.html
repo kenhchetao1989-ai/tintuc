@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tin tức Ajax</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f7fb;
+      color: #1f2937;
+    }
+    .container {
+      max-width: 980px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.08);
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 32px;
+    }
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    select, button {
+      padding: 10px 14px;
+      font-size: 15px;
+      border-radius: 10px;
+      border: 1px solid #dbe3ee;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: .2s;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    .status {
+      margin: 10px 0 20px;
+      color: #475569;
+      font-size: 14px;
+      min-height: 20px;
+    }
+    .news-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 16px;
+    }
+    .news-item {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 16px;
+      background: #fff;
+    }
+    .news-item a {
+      text-decoration: none;
+      color: #111827;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .news-item a:hover {
+      color: #2563eb;
+    }
+    .meta {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #64748b;
+    }
+    .loading {
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Tin tức</h1>
+
+    <div class="toolbar">
+      <label for="source">Chọn nguồn:</label>
+      <select id="source">
+        <option value="vnexpress">VnExpress</option>
+        <option value="dantri">Dân trí</option>
+      </select>
+      <button id="loadBtn">Tải tin</button>
+    </div>
+
+    <div id="status" class="status loading">Đang tải...</div>
+
+    <ul id="newsList" class="news-list"></ul>
+  </div>
+
+  <script>
+    const sources = {
+      vnexpress: "https://api.rss2json.com/v1/api.json?rss_url=https://vnexpress.net/rss/tin-moi-nhat.rss",
+      dantri: "https://api.rss2json.com/v1/api.json?rss_url=https://dantri.com.vn/rss/home.rss"
+    };
+
+    const sourceEl = document.getElementById("source");
+    const newsListEl = document.getElementById("newsList");
+    const statusEl = document.getElementById("status");
+    const loadBtn = document.getElementById("loadBtn");
+
+    async function loadNews() {
+      const source = sourceEl.value;
+      const url = sources[source];
+
+      statusEl.textContent = "Đang tải tin...";
+      statusEl.classList.add("loading");
+      newsListEl.innerHTML = "";
+
+      try {
+        const res = await fetch(url);
+
+        if (!res.ok) {
+          throw new Error("Không tải được dữ liệu từ nguồn tin");
+        }
+
+        const data = await res.json();
+
+        if (data.status !== "ok") {
+          throw new Error(data.message || "Lỗi lấy dữ liệu RSS");
+        }
+
+        const items = data.items || [];
+
+        if (!items.length) {
+          statusEl.textContent = "Không có tin nào.";
+          return;
+        }
+
+        const html = items.map(item => `
+          <li class="news-item">
+            <a href="${item.link}" target="_blank" rel="noopener noreferrer">
+              ${item.title}
+            </a>
+            <div class="meta">
+              ${item.pubDate ? new Date(item.pubDate).toLocaleString("vi-VN") : ""}
+            </div>
+          </li>
+        `).join("");
+
+        newsListEl.innerHTML = html;
+        statusEl.textContent = `Đã tải ${items.length} tin từ ${source === "vnexpress" ? "VnExpress" : "Dân trí"}.`;
+        statusEl.classList.remove("loading");
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "Lỗi: " + err.message;
+        statusEl.classList.remove("loading");
+      }
+    }
+
+    loadBtn.addEventListener("click", loadNews);
+    loadNews();
+  </script>
+</body>
+</html>
