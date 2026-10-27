@@ -3,95 +3,318 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tin tức</title>
+  <title>Tin Tức</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f3f7fb;
-      padding: 20px;
-      margin: 0;
+    :root{
+      --bg:#f3efe8;
+      --paper:#fff;
+      --ink:#121212;
+      --muted:#666;
+      --line:#e7dfd1;
+      --accent:#b91c1c;
+      --shadow:0 12px 30px rgba(0,0,0,.06);
     }
 
-    .container {
-      max-width: 960px;
-      margin: 0 auto;
-      background: #fff;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+    a{text-decoration:none;color:inherit}
+    img{max-width:100%;display:block}
+    .container{max-width:1240px;margin:0 auto;padding:18px 18px 50px}
+    .header{
+      display:flex;justify-content:space-between;align-items:center;gap:20px;
+      border-bottom:2px solid var(--ink);padding-bottom:12px
+    }
+    .brand{
+      font-weight:900;font-size:clamp(2rem,2.8vw,2.8rem);letter-spacing:.06em;text-transform:uppercase
+    }
+    .brand small{font-size:.72rem;letter-spacing:.18em;color:var(--muted);margin-left:8px}
+    .topics{
+      display:flex;flex-wrap:wrap;gap:12px;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)
+    }
+    .nav{
+      display:flex;flex-wrap:wrap;gap:18px;padding:12px 0 18px;border-bottom:1px solid var(--line);
+      color:var(--muted);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase
     }
 
-    h1 {
-      margin-top: 0;
-      font-size: 32px;
+    .hero{
+      display:grid;grid-template-columns:1.7fr 1fr;gap:22px;margin-top:22px
+    }
+    .card{
+      background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden
+    }
+    .feature-image{
+      height:440px;background-size:cover;background-position:center;background-repeat:no-repeat
+    }
+    .feature-body{padding:18px 20px 22px}
+    .chip{
+      display:inline-block;font-size:.72rem;font-weight:800;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px
+    }
+    .feature-title{
+      margin:0;font-size:clamp(2rem,2.8vw,3.1rem);line-height:1.05;font-weight:900
+    }
+    .feature-summary{
+      margin-top:12px;font-size:1.08rem;line-height:1.6;color:#2b2b2b
     }
 
-    .news-item {
-      padding: 14px 0;
-      border-bottom: 1px solid #eee;
+    .side-stack{display:flex;flex-direction:column;gap:14px}
+    .mini{
+      display:grid;grid-template-columns:150px 1fr;gap:14px;padding:10px;background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow)
+    }
+    .mini-image{height:110px;background-size:cover;background-position:center;background-repeat:no-repeat}
+    .mini-meta{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+    .mini-title{margin:0;font-size:1.08rem;line-height:1.25;font-weight:800}
+
+    .content-grid{
+      display:grid;grid-template-columns:2.2fr .8fr;gap:24px;align-items:start;margin-top:26px
+    }
+    .news-grid{
+      display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px
+    }
+    .news-card{
+      background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden
+    }
+    .news-thumb{height:220px;background-size:cover;background-position:center;background-repeat:no-repeat}
+    .news-body{padding:14px 16px 18px}
+    .news-meta{
+      font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px
+    }
+    .news-title{margin:0 0 8px;font-size:1.38rem;line-height:1.25;font-weight:800}
+    .news-summary{margin:0;line-height:1.6;color:#2f2f2f;font-size:.98rem}
+
+    .sidebar{
+      background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow);padding:18px 18px 10px
+    }
+    .sidebar h3{
+      margin:0 0 16px;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)
+    }
+    .sidebar-list{display:flex;flex-direction:column;gap:12px}
+    .sidebar-item{border-top:1px solid var(--line);padding-top:12px}
+    .sidebar-item:first-child{border-top:none;padding-top:0}
+    .sidebar-link{font-weight:800;line-height:1.42;font-size:1.02rem}
+
+    .article-page{
+      display:none;background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow);padding:28px 26px 50px;max-width:980px;margin:0 auto
+    }
+    .article-page.active{display:block}
+    .back-btn{
+      display:inline-block;margin-bottom:18px;color:var(--accent);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-weight:800
+    }
+    .article-head{border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:18px}
+    .article-meta{
+      display:flex;flex-wrap:wrap;gap:10px;color:var(--muted);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase
+    }
+    .article-title{
+      margin:12px 0 0;font-size:clamp(2.6rem,4vw,4.2rem);line-height:1.04;font-weight:900
+    }
+    .article-cover{
+      width:100%;height:500px;background-size:cover;background-position:center;background-repeat:no-repeat;
+      margin:18px 0 24px;border:1px solid var(--line)
+    }
+    .article-lead{
+      font-size:1.3rem;line-height:1.7;font-weight:600;color:#222;margin-bottom:22px
+    }
+    .article-content{
+      font-size:1.12rem;line-height:1.85;color:#1b1b1b
+    }
+    .article-content p{margin:0 0 1.2em}
+    .article-content img{
+      max-width:100%;height:auto;display:block;margin:20px auto;border:1px solid var(--line)
+    }
+    .error-box{
+      background:#fff; border:1px solid var(--line); padding:18px; box-shadow:var(--shadow); color:#333
     }
 
-    .news-item a {
-      color: #0b57d0;
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 18px;
-      line-height: 1.5;
+    @media (max-width:980px){
+      .hero,.content-grid{grid-template-columns:1fr}
+      .news-grid{grid-template-columns:1fr}
+      .article-cover{height:300px}
     }
 
-    .news-item a:hover {
-      text-decoration: underline;
-    }
-
-    .meta {
-      margin-top: 6px;
-      color: #64748b;
-      font-size: 12px;
-    }
-
-    .status {
-      color: #475569;
-      margin-bottom: 20px;
-      min-height: 20px;
+    @media (max-width:640px){
+      .header{flex-direction:column;align-items:flex-start}
+      .mini{grid-template-columns:1fr}
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Tin tức</h1>
-    <div id="status" class="status">Đang tải...</div>
-    <div id="news"></div>
+    <header class="header">
+      <div class="brand">Tin Tức <small>Daily</small></div>
+      <div class="topics">
+        <span>Thời sự</span>
+        <span>Thế giới</span>
+        <span>Kinh doanh</span>
+        <span>Giải trí</span>
+      </div>
+    </header>
+
+    <nav class="nav">
+      <span>Trang chủ</span>
+      <span>Thời sự</span>
+      <span>Thế giới</span>
+      <span>Kinh doanh</span>
+      <span>Thể thao</span>
+      <span>Du lịch</span>
+      <span>Giải trí</span>
+      <span>Đời sống</span>
+    </nav>
+
+    <main id="app"></main>
   </div>
 
   <script>
-    async function loadNews() {
-      try {
-        const response = await fetch('./data/news.json', { cache: 'no-store' });
+    const app = document.getElementById("app");
+    let data = [];
 
-        if (!response.ok) {
-          throw new Error('Không tìm thấy file data/news.json');
-        }
+    function formatDate(value) {
+      if (!value) return "";
+      const d = new Date(value);
+      if (isNaN(d.getTime())) return value;
+      return new Intl.DateTimeFormat("vi-VN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      }).format(d);
+    }
 
-        const data = await response.json();
-        const items = Array.isArray(data.items) ? data.items : [];
+    function renderHome() {
+      if (!Array.isArray(data) || data.length === 0) {
+        app.innerHTML = '<div class="error-box">Không có dữ liệu. Hãy chắc chắn file <b>data/news_detail.json</b> đã tồn tại.</div>';
+        return;
+      }
 
-        const html = items.map(item => `
-          <div class="news-item">
-            <a href="${item.link}" target="_blank" rel="noopener noreferrer">${item.title}</a>
-            <div class="meta">${item.pubDate || ''}</div>
+      const featured = data[0];
+      const secondary = data.slice(1, 7);
+      const sidebar = data.slice(7, 12);
+
+      app.innerHTML = `
+        <section class="hero">
+          <article class="card">
+            <div class="feature-image" style="background-image:url('${featured.image || ""}');"></div>
+            <div class="feature-body">
+              <span class="chip">${featured.source || "Tin tức"}</span>
+              <h1 class="feature-title">
+                <a href="#" data-link="${featured.link}">${featured.title}</a>
+              </h1>
+              <p class="feature-summary">${(featured.summary || featured.content || "").slice(0, 220)}</p>
+            </div>
+          </article>
+
+          <aside class="side-stack">
+            ${secondary.map(item => `
+              <div class="mini">
+                <div class="mini-image" style="background-image:url('${item.image || ""}');"></div>
+                <div>
+                  <div class="mini-meta">${formatDate(item.pubDate || item.published_at)}</div>
+                  <h3 class="mini-title"><a href="#" data-link="${item.link}">${item.title}</a></h3>
+                </div>
+              </div>
+            `).join("")}
+          </aside>
+        </section>
+
+        <section class="content-grid">
+          <div class="news-grid">
+            ${data.slice(1).map(item => `
+              <article class="news-card">
+                <div class="news-thumb" style="background-image:url('${item.image || ""}');"></div>
+                <div class="news-body">
+                  <div class="news-meta">${formatDate(item.pubDate || item.published_at)}</div>
+                  <h3 class="news-title"><a href="#" data-link="${item.link}">${item.title}</a></h3>
+                  <p class="news-summary">${(item.summary || item.content || "").slice(0, 180)}</p>
+                </div>
+              </article>
+            `).join("")}
           </div>
-        `).join("");
 
-        document.getElementById('news').innerHTML = html || '<p>Không có dữ liệu.</p>';
-        document.getElementById('status').textContent = `Đã tải ${items.length} tin.`;
-      } catch (error) {
-        console.error(error);
-        document.getElementById('status').textContent = 'Lỗi: Không tải được dữ liệu tin tức.';
-        document.getElementById('news').innerHTML = '<p>Vui lòng kiểm tra file data/news.json hoặc chạy workflow cập nhật dữ liệu.</p>';
+          <aside class="sidebar">
+            <h3>Tin nổi bật</h3>
+            <div class="sidebar-list">
+              ${sidebar.map(item => `
+                <div class="sidebar-item">
+                  <a class="sidebar-link" href="#" data-link="${item.link}">${item.title}</a>
+                </div>
+              `).join("")}
+            </div>
+          </aside>
+        </section>
+      `;
+
+      bindLinks();
+    }
+
+    function renderArticle(article) {
+      const parts = (article.content || "").split(/\n\s*\n/).filter(Boolean);
+      const articleHTML = parts.map(part => {
+        if (part.startsWith("<img")) return part;
+        return `<p>${part}</p>`;
+      }).join("");
+
+      app.innerHTML = `
+        <article class="article-page active">
+          <a href="#" class="back-btn" id="back-home">← Quay lại</a>
+
+          <div class="article-head">
+            <div class="article-meta">
+              <span>${article.source || "Tin tức"}</span>
+              <span>•</span>
+              <span>${formatDate(article.pubDate || article.published_at)}</span>
+            </div>
+
+            <h1 class="article-title">${article.title}</h1>
+          </div>
+
+          ${article.image ? `<div class="article-cover" style="background-image:url('${article.image}');"></div>` : ""}
+
+          ${article.summary ? `<div class="article-lead">${article.summary}</div>` : ""}
+
+          <div class="article-content">
+            ${articleHTML || "<p>Không có nội dung bài viết.</p>"}
+          </div>
+        </article>
+      `;
+
+      document.getElementById("back-home").addEventListener("click", function(e){
+        e.preventDefault();
+        renderHome();
+      });
+    }
+
+    function bindLinks() {
+      document.querySelectorAll("[data-link]").forEach(el => {
+        el.addEventListener("click", function(e){
+          e.preventDefault();
+          const target = this.getAttribute("data-link");
+          const article = data.find(item => item.link === target);
+          if (article) {
+            renderArticle(article);
+          } else {
+            window.open(target, "_blank");
+          }
+        });
+      });
+    }
+
+    async function loadData() {
+      try {
+        const res = await fetch("./data/news_detail.json");
+        if (!res.ok) throw new Error("missing");
+        data = await res.json();
+        renderHome();
+      } catch (err) {
+        app.innerHTML = `
+          <div class="error-box">
+            Không thể load file <b>data/news_detail.json</b>.<br><br>
+            Hãy chắc chắn repo có file này và GitHub Pages đang phục vụ đúng folder data/.<br><br>
+            Nếu đang chạy local, hãy mở bằng: <code>python -m http.server 8000</code>
+          </div>
+        `;
       }
     }
 
-    loadNews();
+    loadData();
   </script>
 </body>
 </html>
