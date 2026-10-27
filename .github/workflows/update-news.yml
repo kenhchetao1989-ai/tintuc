@@ -2,7 +2,9 @@ name: Update news JSON
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 23 * * *'   # 06:00 sáng Việt Nam
+    - cron: '0 5 * * *'    # 12:00 trưa Việt Nam
+    - cron: '0 11 * * *'   # 18:00 tối Việt Nam
   workflow_dispatch:
 
 jobs:
